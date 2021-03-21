@@ -1,4 +1,5 @@
 services:
+  
   backend:
     container_name: backend
     restart: always
@@ -13,3 +14,14 @@ services:
     image: mongo
     ports: 
       - 27017:27017 
+
+  mongo-express:
+    restart: unless-stopped
+    container_name: mongo_express
+    image: mongo-express
+    ports:
+      - "8000:8081"
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: root
+      ME_CONFIG_BASICAUTH_PASSWORD: root
+      ME_CONFIG_MONGODB_SERVER: mongo
