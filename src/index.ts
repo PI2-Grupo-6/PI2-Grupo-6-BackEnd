@@ -1,20 +1,15 @@
-import express from 'express';
-import mongoose, { mongo } from 'mongoose';
+import mongoose from 'mongoose';
+import app from './application';
 
-const app = express();
-const port = 3000;
+const PORT = 3000;
 
 app.get('/', (req, res) => {
 	res.send('Hello World!');
 });
 
-mongoose.connect('mongodb://mongo:27017/backend', {
-	useNewUrlParser: true,
-	useUnifiedTopology: true
-});
 
-app.listen(port, () => {
-	console.log(`App listening at http://localhost:${port}`);
+app.listen(PORT, () => {
+	console.log(`App listening at http://localhost:${PORT}`);
 
 	const db = mongoose.connection;
 	db.on('error', console.error.bind(console, 'Connection error: '));
