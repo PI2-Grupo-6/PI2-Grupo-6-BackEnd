@@ -1,4 +1,9 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
+
+interface IFood extends Document {
+    name: string,
+    weight: number
+}
 
 const foodSchema = new Schema({
     name: {
@@ -10,5 +15,5 @@ const foodSchema = new Schema({
     }
 });
 
-const Food = mongoose.model('Food', foodSchema);
+const Food: Model<IFood> = mongoose.model('Food', foodSchema);
 export default Food;
