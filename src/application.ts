@@ -1,32 +1,31 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import routes from './routes';
-import bodyParser from 'body-parser';
 
 class Application {
-    public express: express.Application = express();
+	public express: express.Application = express();
 
-    constructor() {
-        this.mongoSetup();
-        this.config();
-        this.routesSetup();
-    }
+	constructor() {
+		this.mongoSetup();
+		this.config();
+		this.routesSetup();
+	}
 
-    private config() {
-        this.express.use(express.json());
-        this.express.use(express.urlencoded({ extended: false }));
-    }
+	private config() {
+		this.express.use(express.json());
+		this.express.use(express.urlencoded({ extended: false }));
+	}
 
-    private mongoSetup() {
-        mongoose.connect('mongodb://mongo:27017/backend', {
-	        useNewUrlParser: true,
-	        useUnifiedTopology: true
-        });
-    }
+	private mongoSetup() {
+		mongoose.connect('mongodb://mongo:27017/backend', {
+			useNewUrlParser: true,
+			useUnifiedTopology: true
+		});
+	}
 
-    private routesSetup() {
-        this.express.use(routes);
-    }
+	private routesSetup() {
+		this.express.use(routes);
+	}
 }
 
 export default new Application().express;

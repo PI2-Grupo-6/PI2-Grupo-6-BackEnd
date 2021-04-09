@@ -1,8 +1,8 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
-interface IFood extends Document {
-    name: string,
-    weight: number
+export interface IFood extends Document {
+    name: string;
+    weight: number;
 }
 
 const foodSchema = new Schema({

@@ -1,4 +1,16 @@
-import mongoose, { Schema } from  'mongoose';
+import mongoose, { Schema, Document } from  'mongoose';
+import { IFood } from './Food';
+
+interface IOrderItem extends Document {
+    item: IFood['_id'];
+    quantity: number;
+}
+
+export interface IOrder extends Document {
+    date: Date;
+    items: [IOrderItem];
+    status: string;
+}
 
 const orderItemSchema = new Schema({
     item: { 
@@ -11,7 +23,7 @@ const orderItemSchema = new Schema({
         required: true,
         default: 1
     }
-})
+});
 
 const orderSchema = new Schema({
     date: {
@@ -25,5 +37,5 @@ const orderSchema = new Schema({
     }
 });
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model<IOrder>('Order', orderSchema);
 export default Order; 
