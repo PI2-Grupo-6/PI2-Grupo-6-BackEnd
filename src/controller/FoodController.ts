@@ -5,7 +5,8 @@ export default class FoodController {
     static async createFood(request: express.Request, response: express.Response) {
         const food = await Food.create({
             name: request.body.name,
-            weight: request.body.weight
+            weight: request.body.weight,
+            portionSize: request.body.portionSize
         });
 
         await food.save();
