@@ -1,11 +1,11 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { IFood, foodSchema } from './Food';
+import { IFood } from './Food';
 
 export interface IMenu extends Document {
     price: number;
     startDate: Date;
     endDate: Date;
-    items: [IFood];
+    items: [IFood['_id']];
 }
 
 const menuSchema = new Schema({
@@ -18,7 +18,12 @@ const menuSchema = new Schema({
         required: true
     },
     endDate: Date,
-    items: [foodSchema]
+    items: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Food',
+        }
+    ]
 });
 
 const Menu: Model<IMenu> = mongoose.model('Menu', menuSchema);

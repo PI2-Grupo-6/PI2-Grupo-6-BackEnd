@@ -6,10 +6,8 @@ import Menu from "../models/Menu";
 export default class MenuController {
     static async createMenu(request: express.Request, response: express.Response) {
         const menu = await Menu.create({
-            price: request.body.price,
-            startDate: request.body.startDate,
-            endDate: request.body.endDate,
-            items: []
+            status: request.body.status,
+            isActivated: request.body.isActivated,
         });
 
         await menu.save();

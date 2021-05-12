@@ -7,7 +7,10 @@ export default class CanisterController {
         const canister = await Canister.create({
             name: request.body.name,
             bocalType: request.body.bocalType,
-            hotOrCold: request.body.hotOrCold
+            hotOrCold: request.body.hotOrCold,
+            logFood: [],
+            logTemperature: [],
+            logHowFull: []
         });
 
         await canister.save();
