@@ -6,7 +6,7 @@ export interface IFood extends Document {
     description: string;
 }
 
-const foodSchema = new Schema({
+export const foodSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -18,7 +18,6 @@ const foodSchema = new Schema({
     description: {
         type: String
     },
-    
 });
 
 const Food: Model<IFood> = mongoose.model('Food', foodSchema);

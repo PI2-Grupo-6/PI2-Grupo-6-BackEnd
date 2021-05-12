@@ -1,4 +1,12 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import { IFood, foodSchema } from './Food';
+
+export interface IMenu extends Document {
+    price: number;
+    startDate: Date;
+    endDate: Date;
+    items: [IFood];
+}
 
 const menuSchema = new Schema({
     price: {
@@ -10,13 +18,8 @@ const menuSchema = new Schema({
         required: true
     },
     endDate: Date,
-    items: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Food',
-        }
-    ]
+    items: [foodSchema]
 });
 
-const Menu = mongoose.model('Menu', menuSchema);
+const Menu: Model<IMenu> = mongoose.model('Menu', menuSchema);
 export default Menu;

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 import express from "express";
 import Food from "../models/Food";
 
@@ -5,8 +7,8 @@ export default class FoodController {
     static async createFood(request: express.Request, response: express.Response) {
         const food = await Food.create({
             name: request.body.name,
-            weight: request.body.weight,
-            portionSize: request.body.portionSize
+            foodType: request.body.foodType,
+            description: request.body.description
         });
 
         await food.save();
