@@ -2,8 +2,8 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface IFood extends Document {
     name: string;
-    weight: number;
-    portionSize: string;
+    foodType: string;
+    description: string;
 }
 
 const foodSchema = new Schema({
@@ -11,12 +11,14 @@ const foodSchema = new Schema({
         type: String,
         required: true
     },
-    portionSize: {
+    foodType: {
+        type: String,
+        enum: ['pasty', 'dry', 'liquid']
+    },
+    description: {
         type: String
     },
-    weight: {
-        type: Number
-    }
+    
 });
 
 const Food: Model<IFood> = mongoose.model('Food', foodSchema);
