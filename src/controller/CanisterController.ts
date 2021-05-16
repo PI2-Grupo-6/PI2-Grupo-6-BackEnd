@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import express from "express";
 import Canister from "../models/Canister";
 

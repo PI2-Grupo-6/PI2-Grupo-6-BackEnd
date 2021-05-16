@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-
 import express from "express";
 import Restaurant from "../models/Restaurant";
 
