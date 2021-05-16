@@ -1,48 +1,48 @@
 import express from "express";
-import Menu from "../models/Menu";
+import Machine from "../models/Machine";
 
-export default class MenuController {
-    static async createMenu(request: express.Request, response: express.Response) {
-        const menu = await Menu.create({
+export default class MachineController {
+    static async createMachine(request: express.Request, response: express.Response) {
+        const machine = await Machine.create({
             status: request.body.status,
             isActivated: request.body.isActivated,
         });
 
-        await menu.save();
+        await machine.save();
 
-        return response.status(200).send(menu);
+        return response.status(200).send(machine);
     }
 
     static async update(request: express.Request, response: express.Response) {
-        const menu = await Menu.findOneAndUpdate(
+        const machine = await Machine.findOneAndUpdate(
             { _id: request.params.id },
             request.body,
             { useFindAndModify: false, new: true }
         )
 
-        return response.status(200).send(menu);
+        return response.status(200).send(machine);
     }
 
     static async get(request: express.Request, response: express.Response) {
-        const menu = await Menu.findById(request.params.id);
-        if (!menu) {
+        const machine = await Machine.findById(request.params.id);
+        if (!machine) {
             return response.status(400).send({
-                error: 'No menu found with this ID'
+                error: 'No machine found with this ID'
             });
         }
 
-        return response.status(200).send(menu);
+        return response.status(200).send(machine);
     }
 
     static async delete(request: express.Request, response: express.Response) {
-        const menu = await Menu.findByIdAndDelete(request.params.id);
+        const machine = await Machine.findByIdAndDelete(request.params.id);
 
-        return response.status(200).send(menu);
+        return response.status(200).send(machine);
     }
 
     static async getAll(request: express.Request, response: express.Response) {
-        const menus = await Menu.find();
+        const machines = await Machine.find();
 
-        return response.status(200).send(menus);
+        return response.status(200).send(machines);
     }
 }
