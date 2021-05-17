@@ -3,15 +3,19 @@ import User from "../models/User";
 
 export default class UserController {
     static async createUser(request: express.Request, response: express.Response) {
-        const user = await User.create({
+        await User.create({
             username: request.body.username,
             password: request.body.password,
             email: request.body.email
+        })
+        .then(user => {
+            return response.status(200).send(user);
+        })
+        .catch(err => {
+            return response.status(400).send({
+                error: err.message
+            });
         });
-
-        await user.save();
-
-        return response.status(200).send(user);
     }
 
     static async update(request: express.Request, response: express.Response) {

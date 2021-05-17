@@ -1,16 +1,13 @@
 import express from 'express';
-import foodRoutes from './routes/foodRoutes';
-import orderRoutes from './routes/orderRoutes';
-import menuRoutes from './routes/menuRoutes';
-import machineRoutes from './routes/machineRoutes';
-import restaurantRoutes from './routes/restaurantRoutes';
+import userRoutes from './routes/userRoutes'
 
-const routes = express.Router();
+const router = express.Router();
 
-routes.use('/foods', foodRoutes);
-routes.use('/machines', machineRoutes);
-routes.use('/menu', menuRoutes);
-routes.use('/orders', orderRoutes);
-routes.use('/restaurants', restaurantRoutes)
+// router.use('/foods', foodRoutes);
+// router.use('/machines', machineRoutes);
+// router.use('/menu', menuRoutes);
+// router.use('/orders', orderRoutes);
+// router.use('/restaurants', restaurantRoutes)
+router.use('/users', userRoutes)
 
-export default routes;
+export default router;

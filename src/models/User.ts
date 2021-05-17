@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Document, Model, NativeError, CallbackError } from 'mongoose';
 
 export interface IUser extends Document {
     username: string;
@@ -20,6 +20,14 @@ const userSchema = new Schema({
         type: String,
         required: true,
         unique: true
+    }
+});
+
+userSchema.post<IUser>('save', function (error: NativeError, doc: IUser, next: (err?: CallbackError) => void) {
+    if (error.name === 'ValidationError') {
+        next(new Error('User could not be created'));
+    } else {
+        next(new Error(error.name));
     }
 });
 

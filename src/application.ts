@@ -1,6 +1,6 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import routes from './routes';
+import { connect } from './database';
 
 class Application {
 	public express: express.Application = express();
@@ -17,10 +17,7 @@ class Application {
 	}
 
 	private mongoSetup() {
-		mongoose.connect('mongodb://mongo:27017/backend', {
-			useNewUrlParser: true,
-			useUnifiedTopology: true
-		});
+		connect();
 	}
 
 	private routesSetup() {
