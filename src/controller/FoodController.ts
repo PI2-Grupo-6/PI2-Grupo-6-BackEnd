@@ -3,15 +3,19 @@ import Food from "../models/Food";
 
 export default class FoodController {
     static async createFood(request: express.Request, response: express.Response) {
-        const food = await Food.create({
+        await Food.create({
             name: request.body.name,
             foodType: request.body.foodType,
             description: request.body.description
+        })
+        .then(food => {
+            return response.status(200).send(food);
+        })
+        .catch(err => {
+            return response.status(400).send({
+                error: err.message
+            });
         });
-
-        await food.save();
-
-        return response.status(200).send(food);
     }
 
     static async update(request: express.Request, response: express.Response) {
