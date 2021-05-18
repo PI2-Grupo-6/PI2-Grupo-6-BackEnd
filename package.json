@@ -8,7 +8,7 @@
     "dev": "ts-node src/.",
     "start": "tsc && node dist",
     "lint": "eslint . --ext .ts",
-    "test": "yarn jest"
+    "test": "if systemctl is-active --quiet mongod; then npx jest; else echo 'error: mongod service isnt initialised (or systemctl isnt the default services manager [then fix this script]).\n\nrun: sudo systemctl start mongod'; fi"
   },
   "repository": {
     "type": "git",

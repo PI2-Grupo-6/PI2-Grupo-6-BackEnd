@@ -3,15 +3,13 @@ const mongoose = require('mongoose');
 const app = require('../../src/application').default;
 const User = require('../../src/models/User').default;
 const { defaultUser1, defaultUser2 } = require('../defaultModels');
-
+const { compareObjectsWithSimilarKeys } = require('../../src/utils/');
 const request = supertest(app);
-
-let user;
 
 describe('Auth/User', () => {
   beforeEach(async (done) => {
-    user = await User.create(defaultUser1);
-    await user.save();
+    this.user = await User.create(defaultUser1);
+    await this.user.save();
     done();
   });
 
@@ -29,184 +27,79 @@ describe('Auth/User', () => {
     expect(response.status).toBe(400);
   });
 
-  // it('should give error because trying to signup EMAIL that already exists', async () => {
-  //   const response = await request.post('/users').send({
-  //     ...defaultUser1,
-  //     username: 'Nemo',
-  //   });
+  // get One
 
-  //   expect(response.status).toBe(400);
-  // });
+  it('will find user by id', async () => {
+    const response = await request.get(`/users/${this.user._id}`);
+    expect(response.status).toBe(200);
+  });
 
-  // it('should give error 400 because the signup of USERNAME with less of 4 characters', async () => {
-  //   const response = await request.post('/users').send({
-  //     ...defaultUser1,
-  //     username: 'me',
-  //   });
-  //   expect(response.text).toEqual(
-  //     expect.stringContaining('length must be at least 4 characters long')
-  //   );
-  // });
+  it('wont find user by random id', async () => {
+    const dummyId = mongoose.Types.ObjectId();
+    const response = await request.get(`/users/${dummyId}`);
+    expect(response.status).toBe(400);
+    expect(response.error.text).toBe(
+      "User not found"
+    );
+  });
 
-  // it('should give error 400 because PASSWORD not valid (less than 8 char)', async () => {
-  //   const response = await request.post('/users').send({
-  //     ...defaultUser1,
-  //     password: 'oi',
-  //   });
-  //   expect(response.status).toBe(400);
-  // });
+  it('wont find user invalid url', async () => {
+    const response = await request.get(`/users/blabla`);
+    expect(response.status).toBe(400);
+    expect(response.error.text).toBe(
+      'Cast to ObjectId failed for value "blabla" at path "_id" for model "User"'
+    );
+  });
 
-  // it('should give error 400 because passwordConfirmation wrong', async () => {
-  //   const response = await request.post('/users').send({
-  //     ...defaultUser1,
-  //     passwordConfirmation: 'porta_azul',
-  //   });
-  //   expect(response.status).toBe(400);
-  // });
-  // // LOGIN
-  // it('should be able to login in account with correct data', async () => {
-  //   const response = await request.post('/user/login').send(defaultUser1);
-  //   expect(response.status).toBe(200);
-  // });
+  // get All
 
-  // it('should not be able to login with wrong password', async () => {
-  //   const passwordChanged = {
-  //     ...defaultUser1,
-  //     password: 'porta_verde',
-  //   };
-  //   const response = await request.post('/user/login').send(passwordChanged);
-  //   expect(response.status).toBe(400);
-  //   expect(response.body.Error).toBe('Wrong email or password.');
-  // });
+  it('will find 2 users correctly saved in db', async () => {
+    await User.create(defaultUser2);
+    await this.user.save();
+    
+    const response = await request.get(`/users/`);
+    expect(response.status).toBe(200);
+    expect(compareObjectsWithSimilarKeys(response.body[0], defaultUser1)).toBeTruthy();
+    expect(compareObjectsWithSimilarKeys(response.body[1], defaultUser2)).toBeTruthy();
+  });
 
-  // it('should not be able to login if wrong email', async () => {
-  //   const response = await request.post('/user/login').send({
-  //     ...defaultUser1,
-  //     email: 'estrela@email.com',
-  //   });
-  //   expect(response.status).toBe(400);
-  // });
-  // // UPDATE
-  // it('should be able to update User', async () => {
-  //   const login = await request.post('/user/login').send(defaultUser1);
+  it('will not find any user', async () => {
+    await User.remove({});
+    const response = await request.get(`/users/`);
+    expect(response.status).toBe(400);
+  });
 
-  //   const { authtoken } = login.headers;
+  // update
 
-  //   const response = await request
-  //     .put(`/user/update/${user._id}`)
-  //     .send({
-  //       username: 'joaozindaora',
-  //       password: 'porta_cinza',
-  //       passwordConfirmation: 'porta_cinza',
-  //       email: 'estrela@email.com',
-  //     })
-  //     .set('authtoken', `${authtoken}`);
+  it('should be able to update user', async () => {
+    const response = await request.put(`/users/${this.user._id}`).send({
+      ...defaultUser2,
+      username: 'cleber'
+    });
+    expect(response.status).toBe(200);
+    expect(response.body.username).toBe('cleber');
+  });
 
-  //   expect(response.text).toEqual(
-  //     expect.stringContaining('User updated successfully.')
-  //   );
-  // });
 
-  // // UPDATE
-  // it('should keep user infos', async () => {
-  //   const login = await request.post('/user/login').send(defaultUser1);
+  it('will throw error, invalid username', async () => {
+    const response = await request.put(`/users/${this.user._id}`).send({
+      ...defaultUser2,
+      username: ''
+    });
+    expect(response.status).toBe(400);
+  });
+  
 
-  //   const { authtoken } = login.headers;
+  // delete
 
-  //   const response = await request
-  //     .put(`/user/update/${user._id}`)
-  //     .send({})
-  //     .set('authtoken', `${authtoken}`);
+  it('will delete user', async () => {
+    const response = await request.delete(`/users/${this.user._id}`);
+    expect(response.status).toBe(200);
+  });
 
-  //   expect(response.text).toEqual(
-  //     expect.stringContaining('User updated successfully.')
-  //   );
-  // });
-
-  // it('should not be able to update if new username has less tha 4 characters', async () => {
-  //   const login = await request.post('/user/login').send(defaultUser1);
-
-  //   const { authtoken } = login.headers;
-
-  //   const response = await request
-  //     .put(`/user/update/${user._id}`)
-  //     .send({
-  //       username: 'oi',
-  //       password: 'porta_cinza',
-  //       passwordConfirmation: 'porta_cinza',
-  //       email: 'estrela@email.com',
-  //     })
-  //     .set('authtoken', `${authtoken}`);
-  //   expect(response.text).not.toEqual(
-  //     expect.stringContaining('User updated successfully.')
-  //   );
-  // });
-
-  // it('should not be able to update if new password has less than 8 characters', async () => {
-  //   const login = await request.post('/user/login').send(defaultUser1);
-
-  //   const { authtoken } = login.headers;
-
-  //   const response = await request
-  //     .put(`/user/update/${user._id}`)
-  //     .send({
-  //       username: 'joaozindaora',
-  //       password: 'porta',
-  //       passwordConfirmation: 'porta',
-  //       email: 'estrela@email.com',
-  //     })
-  //     .set('authtoken', `${authtoken}`);
-
-  //   expect(response.text).not.toEqual(
-  //     expect.stringContaining('User updated successfully.')
-  //   );
-  // });
-
-  // // DELETE
-  // it('should be able to delete user', async () => {
-  //   const login = await request.post('/user/login').send(defaultUser1);
-
-  //   const { authtoken } = login.headers;
-  //   const response = await request
-  //     .delete(`/user/delete/${user._id}`)
-  //     .set('authtoken', `${authtoken}`);
-
-  //   expect(response.status).toBe(200);
-  // });
-
-  // // DELETE
-  // it('should not be able to delete another user', async () => {
-  //   const secondUser = await request.post('/users').send(defaultUser2);
-  //   console.log(secondUser.body);
-  //   const login = await request.post('/user/login').send(defaultUser1);
-
-  //   const { authtoken } = login.headers;
-  //   const response = await request
-  //     .delete(`/user/delete/${secondUser.body._id}`)
-  //     .set('authtoken', `${authtoken}`);
-
-  //   expect(response.status).toBe(400);
-  // });
-
-  // it('will find user by id', async () => {
-  //   const response = await request.get(`/user/user/${user._id}`);
-  //   expect(response.status).toBe(200);
-  // });
-
-  // it('wont find user by random id', async () => {
-  //   const dummyId = mongoose.Types.ObjectId();
-  //   const response = await request.get(`/user/user/${dummyId}`);
-  //   expect(response.status).toBe(400);
-  //   expect(response.body.error).toBe(
-  //     "Error while finding user.Error: User doesn't exist."
-  //   );
-  // });
-
-  // it('wont find user invalid url', async () => {
-  //   const response = await request.get(`/user/user/blabla`);
-  //   expect(response.status).toBe(400);
-  //   expect(response.body.error).toBe(
-  //     'Error while finding user.CastError: Cast to ObjectId failed for value "blabla" at path "_id" for model "User"'
-  //   );
-  // });
+  it('will not delete user for the second time', async () => {
+    await request.delete(`/users/${this.user._id}`);
+    const response = await request.delete(`/users/${this.user._id}`);
+    expect(response.status).toBe(400);
+  });
 });
