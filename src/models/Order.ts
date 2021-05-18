@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from  'mongoose';
 import { IFood } from './Food';
 
-interface IOrderItem extends Document {
+interface IOrderItem {
     item: IFood['_id'];
     quantity: number;
 }
@@ -23,7 +23,7 @@ const orderItemSchema = new Schema({
         required: true,
         default: 1
     }
-});
+}, { _id: false});
 
 const orderSchema = new Schema({
     date: {
