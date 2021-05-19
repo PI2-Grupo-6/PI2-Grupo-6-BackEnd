@@ -5,7 +5,7 @@ export default class RestaurantController {
     static async createRestaurant(request: express.Request, response: express.Response) {
         const restaurant = await Restaurant.create({
             name: request.body.name,
-            machines: [],
+            machines: request.body.machines, 
         });
 
         await restaurant.save();

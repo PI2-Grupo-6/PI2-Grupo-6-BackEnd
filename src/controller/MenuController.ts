@@ -7,7 +7,7 @@ export default class MenuController {
             price: request.body.price,
             startDate: request.body.startDate,
             endDate: request.body.endDate,
-            items: []
+            items: request.body.items 
         });
 
         await menu.save();
